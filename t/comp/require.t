@@ -34,7 +34,7 @@ if (grep -e, @files_to_delete) {
 
 my $Is_EBCDIC = (ord('A') == 193) ? 1 : 0;
 my $Is_UTF8   = (${^OPEN} || "") =~ /:utf8/;
-my $total_tests = 58;
+my $total_tests = 60;
 if ($Is_EBCDIC || $Is_UTF8) { $total_tests -= 3; }
 print "1..$total_tests\n";
 
@@ -376,6 +376,24 @@ foreach (sort keys %templates) {
     if ($@ =~ /^(Unsupported script encoding \Q$_\E)/) {
 	print "ok $i # skip $1\n";
     }
+}
+
+# feature require_false
+{
+    print "# use feature 'require_false';\n";
+    use feature 'require_false';
+    write_file('bleah.pm', '0;');
+    %INC = ();
+    eval { require "bleah.pm" };
+    $i++;
+    print "not " if $@ =~ /did not return a true value/;
+    print "ok $i - require loads module returning 0\n";
+    write_file('bleah.pm', 'die "foobar";');
+    %INC = ();
+    eval { require "bleah.pm" };
+    $i++;
+    print "not " unless $@ =~ /foobar/;
+    print "ok $i - require throws compile error\n";
 }
 
 END {
