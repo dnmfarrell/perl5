@@ -36,6 +36,7 @@ my %feature = (
     unicode_strings => 'unicode',
     fc              => 'fc',
     signatures      => 'signatures',
+    require_false   => 'require_false',
 );
 
 # NOTE: If a feature is ever enabled in a non-contiguous range of Perl

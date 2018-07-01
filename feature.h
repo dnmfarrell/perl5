@@ -29,7 +29,7 @@
 	   & HINT_LOCALIZE_HH)						  \
 	    ? Perl_feature_is_enabled(aTHX_ STR_WITH_LEN(name)) : FALSE)
 /* The longest string we pass in.  */
-#define MAX_FEATURE_LEN (sizeof("postderef_qq")-1)
+#define MAX_FEATURE_LEN (sizeof("require_false")-1)
 
 #define FEATURE_FC_IS_ENABLED \
     ( \
@@ -125,6 +125,12 @@
     ( \
 	CURRENT_FEATURE_BUNDLE == FEATURE_BUNDLE_CUSTOM && \
 	 FEATURE_IS_ENABLED("myref") \
+    )
+
+#define FEATURE_REQUIRE_FALSE_IS_ENABLED \
+    ( \
+	CURRENT_FEATURE_BUNDLE == FEATURE_BUNDLE_CUSTOM && \
+	 FEATURE_IS_ENABLED("require_false") \
     )
 
 #define FEATURE_UNICODE_IS_ENABLED \
