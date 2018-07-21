@@ -4507,7 +4507,6 @@ PP(pp_leaveeval)
     U8 gimme;
     PERL_CONTEXT *cx;
     OP *retop;
-    int failed;
     CV *evalcv;
     bool keep;
 
@@ -4518,12 +4517,6 @@ PP(pp_leaveeval)
 
     oldsp = PL_stack_base + cx->blk_oldsp;
     gimme = cx->blk_gimme;
-
-    /* did require return a false value? */
-    failed =    CxOLD_OP_TYPE(cx) == OP_REQUIRE
-             && !(gimme == G_SCALAR
-                    ? SvTRUE_NN(*PL_stack_sp)
-                    : PL_stack_sp > oldsp);
 
     if (gimme == G_VOID) {
         PL_stack_sp = oldsp;
@@ -4550,8 +4543,8 @@ PP(pp_leaveeval)
 #endif
     CvDEPTH(evalcv) = 0;
 
-    /* pop the CXt_EVAL, and if a require failed, croak */
-    S_pop_eval_context_maybe_croak(aTHX_ cx, NULL, failed);
+    /* pop the CXt_EVAL */
+    S_pop_eval_context_maybe_croak(aTHX_ cx, NULL, 0);
 
     if (!keep)
         CLEAR_ERRSV();
