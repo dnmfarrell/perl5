@@ -1622,6 +1622,7 @@ Perl_qerror(pTHX_ SV *err)
  *     1: undef  $INC{$name}; croak "$name did not return a true value";
  *     2: delete $INC{$name}; croak "$errsv: Compilation failed in require"
  */
+#include "feature.h"
 
 static void
 S_pop_eval_context_maybe_croak(pTHX_ PERL_CONTEXT *cx, SV *errsv, int action)
@@ -1630,7 +1631,9 @@ S_pop_eval_context_maybe_croak(pTHX_ PERL_CONTEXT *cx, SV *errsv, int action)
     bool do_croak;
 
     CX_LEAVE_SCOPE(cx);
-    do_croak = action && (CxOLD_OP_TYPE(cx) == OP_REQUIRE);
+    do_croak = action && (CxOLD_OP_TYPE(cx) == OP_REQUIRE) &&
+        (!FEATURE_REQUIRE_FALSE_IS_ENABLED || action == 2);
+
     if (do_croak) {
         /* keep namesv alive after cx_popeval() */
         namesv = cx->blk_eval.old_namesv;
